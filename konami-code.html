@@ -15,7 +15,9 @@
 		window.addEventListener('keyup', (e) => {
 			userInput.push(e.key)
 			userInput.splice(-konami.length - 1, userInput.length - konami.length)
-			console.log(userInput);
+			if (userInput.join('').includes(konami)) {
+				cornify_add()
+			}
 		})
 	</script>
 </body>
