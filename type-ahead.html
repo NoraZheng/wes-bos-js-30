@@ -94,12 +94,48 @@
 		</ul>
 	</form>
 	<script>
-		const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+		const url = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
 
 		const cities = []
 		fetch(url)
 			.then(res => res.json())
-			.then(data => console.log(data);)
+			.then(data => cities.push(...data))
+
+		const filterResults = (keyword, citiesArray) => {
+			const regex = new RegExp(keyword, 'gi')
+
+			return cities.filter((city) => city.city.match(regex) || city.state.match(regex)
+			)
+		}
+
+		function numberWithCommas(number) {
+			return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+		}
+
+		const searchBar = document.querySelector('.search')
+		const suggestions = document.querySelector('.suggestions')
+
+		function displayResults() {
+			const filteredCities = filterResults(this.value, cities);
+			const html = filteredCities.map((city) => {
+				const regex = new RegExp(this.value, 'gi')
+
+				const cityName = city.city.replace(regex, `<span class="hl">${this.value}</span>`)
+				const stateName = city.state.replace(regex, `<span class="hl">${this.value}</span>`)
+
+				return `
+				<li>
+					<span class="name">${cityName}, ${stateName}</span>
+					<span class="population"> ${numberWithCommas(city.population)}</span>
+				</li>
+				`}
+			).join('')
+			suggestions.innerHTML = html
+		}
+
+		searchBar.addEventListener('change', displayResults)
+		searchBar.addEventListener('keyup', displayResults)
+
 	</script>
 </body>
 
