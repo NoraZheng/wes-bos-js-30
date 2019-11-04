@@ -153,8 +153,18 @@
 				`
 			}).join('')
 		}
-		addItems.addEventListener('submit', addItem)
 
+		function toggleDone(e) {
+			if (!e.target.matches('input')) return;
+			const target = e.target;
+			const index = target.dataset.index
+			items[index].done = !items[index].done;
+			localStorage.setItem('items', JSON.stringify(items))
+			displayList(items, itemsList)
+		}
+
+		addItems.addEventListener('submit', addItem)
+		itemsList.addEventListener('click', toggleDone)
 		displayList(items, itemsList)
 	</script>
 
